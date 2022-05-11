@@ -30,7 +30,7 @@
     <!-- Topbar Start -->
     <div id="app"></div>
 <div id="shop" v-cloak>    
-    <div class="container-fluid" >
+    <div class="container-fluid text-dark" >
         
         <div class="row align-items-center py-3 px-xl-5">
             <div class="col-lg-3 d-none d-lg-block">
@@ -53,7 +53,8 @@
             <div class="col-lg-3 col-6 text-right">                
                 <a href="" class="btn border">
                     <i class="fas fa-shopping-cart text-primary"></i>
-                    <span class="badge">0</span>
+                    <span class="badge" v-if="carts">{{carts.length}}</span>
+                    <span class="badge" v-else>0</span>
                 </a>
             </div>
         </div>
@@ -86,8 +87,10 @@
                         <div class="navbar-nav mr-auto py-0">
                             <!-- <a href="index.html" class="nav-item nav-link">Home</a> -->
                             <a href="" class="nav-item nav-link active">Shop</a>
-                            <a href="" class="nav-item nav-link">Cart</a>
-                            <a href="" class="nav-item nav-link">Checkout</a>
+                            <!-- <a href="" class="nav-item nav-link">Cart</a> -->
+                            <a @click.prevent="click_cart()" type="button" class="nav-item nav-link" data-toggle="modal" data-target="#cartModal">
+                                <i class="fas fa-shopping-cart text-primary mr-1"></i>Cart
+                            </a>
                             <a href="" class="nav-item nav-link">ประวัติการเบิก</a>                           
                         </div>
                         <div class="navbar-nav ml-auto py-0">
@@ -126,12 +129,17 @@
                                 </div>
                             </div>
                             <div class="card-footer d-flex justify-content-between bg-light border">
-                                <a href="" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
-                                <a href="" class="btn btn-sm text-dark p-0"><i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
+                                <!-- <a href="" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a> -->
+                                <!-- <a href="" class="btn btn-sm text-dark p-0"><i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a> -->
+                                <button type="button" class="btn btn-sm text-dark p-0" data-toggle="modal" data-target="#detailModal">
+                                    <i class="fas fa-eye text-primary mr-1"></i> View Detail
+                                </button>
+                                <button @click="add_to_cart(data.pro_id,data.pro_name,data.unit_name,data.instock,data.min)" type="button" class="btn btn-sm text-dark p-0">
+                                    <i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart
+                                </button>
                             </div>
                         </div>
-                    </div>
-                    
+                    </div>                    
                 </div>
             </div>
             <div class="col-lg-12 col-md-12 text-center" v-if="datas == ''">
@@ -148,7 +156,110 @@
         
     </div>
     <!-- Footer End -->
-</div>
+
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#detailModal">
+        Launch demo modal
+    </button>
+    
+    <!-- Detail Modal -->
+    <div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detailModalLabel">รายละเอียด</h5>
+                    <button ref="cart_modal_close" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Detail Modal -->
+
+    <!-- Cart Modal -->
+    <div class="modal fade" id="cartModal" tabindex="-1" role="dialog" aria-labelledby="cartModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cartModalLabel">ตะกร้าสินค้า</h5>
+                    <button ref="cart_modal_close" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid pt-5">
+                        <div class="row px-xl-5">
+                            <div class="col-lg-12 table-responsive mb-5">
+                                <table class="table table-bordered text-center mb-0">
+                                    <thead class="bg-secondary text-dark">
+                                        <tr >
+                                            <th>Products</th>
+                                            <th>หน่วยนับ</th>
+                                            <th>จำนวนในคลัง</th>
+                                            <th>จำนวนเบิก</th>
+                                            <th>Remove</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="align-middle">
+                                        {{carts}}
+                                        <!-- <tr v-for="cart in carts">
+                                            <td>{{cart.img}}</td>
+                                        </tr> -->
+                                        <!-- <tr><td v-if="!carts" colspan="5"> - ไม่พบสินค้า - </td></tr> -->
+                                        <tr  v-if="carts" v-for="ca,index in carts">
+                                            <td class="align-middle">
+                                                <img :src="'../estock/uploads/' + ca.img" alt="" style="width: 50px;"> 
+                                                {{ca.pro_name}}
+                                            </td>
+                                            <td class="align-middle">{{ca.unit_name}}</td>
+                                            <td class="align-middle">{{ca.instock}}</td>
+                                            <td class="align-middle">
+                                                <div class="input-group quantity mx-auto" style="width: 100px;">
+                                                    <div class="input-group-btn">
+                                                        <button @click="click_qua_down" class="btn btn-sm btn-primary btn-minus" >
+                                                            <i class="fa fa-minus"></i>
+                                                        </button>
+                                                    </div>
+
+                                                    <input type="text" class="form-control form-control-sm bg-secondary text-center" :value="ca.qua" >
+
+                                                    <div class="input-group-btn">
+                                                        <button  @click="click_qua_up" class="btn btn-sm btn-primary btn-plus"><i class="fa fa-plus"></i></button>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="align-middle">
+                                                <button @click="del_cart_list(index)" class="btn btn-sm btn-primary">
+                                                    <i class="fa fa-times"></i>
+                                                </button>
+                                            </td>
+                                        </tr>                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button @click="send_order" type="button" class="btn btn-primary">ส่งเบิก</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Detail Modal -->
+
+
+</div><!-- vue-app -->
 
     <!-- Back to Top -->
     <a href="#" class="btn btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>

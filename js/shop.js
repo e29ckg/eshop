@@ -7,6 +7,7 @@ Vue.createApp({
       datas:'',
       q:'',
       catalogs:'',
+      carts:[],
       user:'',
       url_img:'./node_modules/admin-lte/dist/img/user2-160x160.jpg',
     }
@@ -80,6 +81,23 @@ Vue.createApp({
 
     },  
     
+    click_qua_down(){
+
+    },    
+    click_qua_up(){
+
+    },
+    send_order(){
+
+    },
+    add_to_cart(pro_id,pro_name,unit_name,instock,qua){
+      this.carts.push({pro_id:pro_id, pro_name:pro_name, unit_name:unit_name, instock:instock, qua:qua})
+      console.log('add_to_cart' + pro_id + pro_name + instock + unit_name + qua);
+    },
+    del_cart_list(index){
+      this.carts.pop()
+    },
+    
     logout() {
       Swal.fire({
         title: 'Are you sure?',
@@ -97,6 +115,9 @@ Vue.createApp({
         }
       })    
     },  
+    click_cart(){
+      console.log('click_cart_test')
+    },
     test(){
       console.log('test')
     }

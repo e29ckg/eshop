@@ -6,7 +6,7 @@ Vue.createApp({
       user:'',
       datas:'',
       q:'',
-      catalogs:'',
+      catalogs:'',      
       carts:[],
       user:'',
       url_img:'./node_modules/admin-lte/dist/img/user2-160x160.jpg',
@@ -80,22 +80,70 @@ Vue.createApp({
       this.$refs['cat_menu'].click();
 
     },  
-    
-    click_qua_down(){
-
+    add_to_cart(pro_id,pro_name, img, unit_name,instock,min){
+      if(min > instock){qua = instock}
+      else if(min < 1){qua = 1}
+      else{qua = min}
+      this.carts.push({pro_id:pro_id, pro_name:pro_name, img:img, unit_name:unit_name, instock:instock, qua:qua, min:min})
+      Swal.fire({
+        title:  pro_name,
+        text: "ใส่ในตะกร้าแล้ว",
+        icon: 'success',
+        timer: 1000,
+      })
+      this.$refs['cart_show'].click();
+    },
+    ck_qua_input(index){
+      if(this.carts[index].qua < this.carts[index].min){ this.carts[index].qua = this.carts[index].min}
+      if(this.carts[index].qua > this.carts[index].instock){ this.carts[index].qua = this.carts[index].instock}
+    },
+    click_qua_down(index,min){
+      val = this.carts[index].min
+      this.carts[index].qua = this.carts[index].qua - val
+      this.ck_qua_input(index)
     },    
-    click_qua_up(){
-
-    },
-    send_order(){
-
-    },
-    add_to_cart(pro_id,pro_name,unit_name,instock,qua){
-      this.carts.push({pro_id:pro_id, pro_name:pro_name, unit_name:unit_name, instock:instock, qua:qua})
-      console.log('add_to_cart' + pro_id + pro_name + instock + unit_name + qua);
+    click_qua_up(index){
+      val = this.carts[index].min
+      this.carts[index].qua = this.carts[index].qua + val
+      this.ck_qua_input(index)
     },
     del_cart_list(index){
       this.carts.pop()
+    },
+    send_order(){
+      if(this.carts[0].pro_id != '' && this.carts[0].qua != 0){
+        var jwt = localStorage.getItem("jwt");
+        axios.post(url_base + '../estock/api/orders/orders_by_user.php',{carts:this.carts},{ headers: {"Authorization" : `Bearer ${jwt}`}})
+            .then(response => {
+                if (response.data.status == 'success') {
+                  Swal.fire({
+                    icon: response.data.status,
+                    title: response.data.massege,
+                    showConfirmButton: false,
+                    timer: 1500
+                  });
+                  this.$refs['cart_modal_close'].click();
+                    this.carts = []
+                }else{
+                  Swal.fire({
+                    icon: response.data.status,
+                    title: response.data.massege,
+                    showConfirmButton: false,
+                    timer: 1500
+                  })
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+      }else{
+        Swal.fire({
+                    icon: 'error',
+                    title: 'กรุณาตรวจสอบการป้อนข้อมูล',
+                    showConfirmButton: false,
+                    timer: 1500
+                  });
+      }
     },
     
     logout() {

@@ -113,7 +113,7 @@ Vue.createApp({
     send_order(){
       if(this.carts[0].pro_id != '' && this.carts[0].qua != 0){
         var jwt = localStorage.getItem("jwt");
-        axios.post(url_base + '../estock/api/orders/orders_by_user.php',{carts:this.carts},{ headers: {"Authorization" : `Bearer ${jwt}`}})
+        axios.post(url_base + '/estock/api/orders/orders_by_user.php',{carts:this.carts, action:'insert'},{ headers: {"Authorization" : `Bearer ${jwt}`}})
             .then(response => {
                 if (response.data.status == 'success') {
                   Swal.fire({

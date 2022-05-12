@@ -50,10 +50,10 @@
                     </div>
                 </form>
             </div>
-            <div class="col-lg-3 col-6 text-right">                
-                <a href="" class="btn border">
+            <div class="col-lg-3 col-6 text-right">       
+                <a @click.prevent="click_cart()" ref="cart_show" class="btn border" data-toggle="modal" data-target="#cartModal">
                     <i class="fas fa-shopping-cart text-primary"></i>
-                    <span class="badge" v-if="carts">{{carts.length}}</span>
+                    <span class="badge" v-if="carts.length > 0">{{carts.length}}</span>
                     <span class="badge" v-else>0</span>
                 </a>
             </div>
@@ -85,11 +85,10 @@
                     </button>
                     <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                         <div class="navbar-nav mr-auto py-0">
-                            <!-- <a href="index.html" class="nav-item nav-link">Home</a> -->
                             <a href="" class="nav-item nav-link active">Shop</a>
-                            <!-- <a href="" class="nav-item nav-link">Cart</a> -->
                             <a @click.prevent="click_cart()" type="button" class="nav-item nav-link" data-toggle="modal" data-target="#cartModal">
-                                <i class="fas fa-shopping-cart text-primary mr-1"></i>Cart
+                                <i class="fas fa-shopping-cart text-primary mr-1"></i>
+                                Cart<span class="badge" v-if="carts.length > 0">({{carts.length}})</span>
                             </a>
                             <a href="" class="nav-item nav-link">ประวัติการเบิก</a>                           
                         </div>
@@ -134,7 +133,10 @@
                                 <button type="button" class="btn btn-sm text-dark p-0" data-toggle="modal" data-target="#detailModal">
                                     <i class="fas fa-eye text-primary mr-1"></i> View Detail
                                 </button>
-                                <button @click="add_to_cart(data.pro_id,data.pro_name,data.unit_name,data.instock,data.min)" type="button" class="btn btn-sm text-dark p-0">
+                                <button v-if="data.instock == 0" type="button" class="btn btn-sm text-dark p-0" disabled>
+                                    <i class="fas fa-shopping-cart text-primary mr-1"></i>หมด
+                                </button>
+                                <button v-else @click="add_to_cart(data.pro_id, data.pro_name, data.img, data.unit_name, data.instock, data.min)" type="button" class="btn btn-sm text-dark p-0">
                                     <i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart
                                 </button>
                             </div>
@@ -158,9 +160,9 @@
     <!-- Footer End -->
 
     <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#detailModal">
+    <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#detailModal">
         Launch demo modal
-    </button>
+    </button> -->
     
     <!-- Detail Modal -->
     <div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
@@ -210,34 +212,31 @@
                                     </thead>
                                     <tbody class="align-middle">
                                         {{carts}}
-                                        <!-- <tr v-for="cart in carts">
-                                            <td>{{cart.img}}</td>
-                                        </tr> -->
-                                        <!-- <tr><td v-if="!carts" colspan="5"> - ไม่พบสินค้า - </td></tr> -->
                                         <tr  v-if="carts" v-for="ca,index in carts">
                                             <td class="align-middle">
-                                                <img :src="'../estock/uploads/' + ca.img" alt="" style="width: 50px;"> 
+                                                <img v-if="ca.img" :src="'../estock/uploads/' + ca.img" alt="" style="width: 50px;"> 
+                                                <img v-else src="../estock/uploads/none.png" alt="" style="width: 50px;"> 
                                                 {{ca.pro_name}}
                                             </td>
                                             <td class="align-middle">{{ca.unit_name}}</td>
                                             <td class="align-middle">{{ca.instock}}</td>
                                             <td class="align-middle">
-                                                <div class="input-group quantity mx-auto" style="width: 100px;">
+                                                <div class="input-group quantity mx-auto" style="width: 150px;">
                                                     <div class="input-group-btn">
-                                                        <button @click="click_qua_down" class="btn btn-sm btn-primary btn-minus" >
+                                                        <button @click="click_qua_down(index)" class="btn btn-sm btn-primary btn-minus" >
                                                             <i class="fa fa-minus"></i>
                                                         </button>
                                                     </div>
 
-                                                    <input type="text" class="form-control form-control-sm bg-secondary text-center" :value="ca.qua" >
+                                                    <input v-model="ca.qua" @keyup="ck_qua_input(index)" @change="ck_qua_input(index)" type="text" class="form-control form-control-sm bg-secondary text-center" disabled>
 
                                                     <div class="input-group-btn">
-                                                        <button  @click="click_qua_up" class="btn btn-sm btn-primary btn-plus"><i class="fa fa-plus"></i></button>
+                                                        <button  @click="click_qua_up(index)" class="btn btn-sm btn-primary btn-plus"><i class="fa fa-plus"></i></button>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td class="align-middle">
-                                                <button @click="del_cart_list(index)" class="btn btn-sm btn-primary">
+                                                <button @click="del_cart_list(index)" v-if="index + 1  == carts.length" class="btn btn-sm btn-primary">
                                                     <i class="fa fa-times"></i>
                                                 </button>
                                             </td>
@@ -250,8 +249,9 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button @click="send_order" type="button" class="btn btn-primary">ส่งเบิก</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">เลือกสินค้าอื่นต่อ</button>
+                    <button v-if="carts.length == 0" type="button" class="btn btn-primary btn-disabled" disabled>ส่งเบิก</button>
+                    <button v-else type="button" @click="send_order"  class="btn btn-primary">ส่งเบิก</button>
                 </div>
             </div>
         </div>

@@ -34,7 +34,7 @@
         
         <div class="row align-items-center py-3 px-xl-5">
             <div class="col-lg-3 d-none d-lg-block">
-                <a href="" class="text-decoration-none">
+                <a class="text-decoration-none">
                     <h1 class="m-0 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold border px-3 mr-1">E</span>Shop</h1>
                 </a>
             </div>
@@ -78,19 +78,24 @@
             <div class="col-lg-9">
                 <nav class="navbar navbar-expand-lg bg-light navbar-light py-3 py-lg-0 px-0">
                     <a href="" class="text-decoration-none d-block d-lg-none">
-                        <h1 class="m-0 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold border px-3 mr-1">E</span>Shopper</h1>
+                        <h1 class="m-0 display-5 font-weight-semi-bold">
+                            <span class="text-primary font-weight-bold border px-3 mr-1">E</span>
+                            Shopper</h1>
                     </a>
                     <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                         <div class="navbar-nav mr-auto py-0">
-                            <a href="" class="nav-item nav-link active">Shop</a>
+                            <!-- <a class="nav-item nav-link active">Shop</a> -->
                             <a @click.prevent="click_cart()" type="button" class="nav-item nav-link" data-toggle="modal" data-target="#cartModal">
                                 <i class="fas fa-shopping-cart text-primary mr-1"></i>
                                 Cart<span class="badge" v-if="carts.length > 0">({{carts.length}})</span>
                             </a>
-                            <a @click.prevent="view_record" class="nav-item nav-link" data-toggle="modal" data-target="#viewRecordModal">ประวัติการเบิก</a>                           
+                            <a @click.prevent="view_record" class="nav-item nav-link" data-toggle="modal" data-target="#viewRecordModal">
+                                <i class="fas fa-book text-primary mr-1"></i>
+                                ประวัติการเบิก
+                            </a>                           
                         </div>
                         <div class="navbar-nav ml-auto py-0">
                             <span class="nav-item nav-link text-muted">{{user.fullname}}</span> 
@@ -176,7 +181,6 @@
                                             <img class="w-100 h-100" :src="'../estock/uploads/' + product_detail.img" alt="Image">
                                         </div>
                                         <div class="carousel-item active">
-                                            <!-- <img class="w-100 h-100" src="img/product-2.jpg" alt="Image"> -->
                                             <img class="w-100 h-100" :src="'../estock/uploads/' + product_detail.img" alt="Image">
                                         </div>
                                     </div>
@@ -188,7 +192,7 @@
                                     </a>
                                 </div>
                             </div>
-                
+                            <!-- {{product_detail}} -->
                             <div class="col-lg-7 pb-5">
                                 <h3 class="font-weight-semi-bold">{{product_detail.pro_name}}</h3>
                                 <div class="d-flex mb-3">
@@ -202,16 +206,17 @@
                                     <small class="pt-1">(คลัง {{product_detail.instock}} {{product_detail.unit_name}})</small>
                                 </div>
                                 <!-- <h3 class="font-weight-semi-bold mb-4">$150.00</h3> -->
+                                <p v-if="product_detail.instock < 1" class="mb-4">หมด</p>
                                 <p class="mb-4">{{product_detail.pro_detail}}</p>
                                 
-                                <div class="d-flex align-items-center mb-4 pt-2">
+                                <div class="d-flex align-items-center pt-2">
                                     <div class="input-group quantity mr-3" style="width: 130px;">
                                         <div class="input-group-btn">
                                             <button @click="click_qua_down_detail()" class="btn btn-primary btn-minus">
                                                 <i class="fa fa-minus"></i>
                                             </button>
                                         </div>
-                                        <input v-model="product_detail.qua" type="text" class="form-control bg-secondary text-center">
+                                        <input v-model="product_detail.qua" type="text" class="form-control bg-secondary text-center" disabled>
                                         <div class="input-group-btn">
                                             <button @click="click_qua_up_detail()" class="btn btn-primary btn-plus">
                                                 <i class="fa fa-plus"></i>

@@ -111,7 +111,7 @@
             <div class="col-lg-12 col-md-12">
                 <div class="row pb-4">
                     
-                    <div class="col-lg-3 col-md-6 col-sm-12 pb-1" v-for="data in datas">
+                    <div class="col-lg-3 col-md-6 col-sm-12 pb-1" v-for="data,index in datas">
                         <div class="card product-item border-0 mb-4">
                             <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
                                 <img class="img-fluid w-100" v-if="data.img" :src="'../estock/uploads/' + data.img" alt="pro_img">
@@ -127,12 +127,10 @@
                                 </div>
                             </div>
                             <div class="card-footer d-flex justify-content-between bg-light border">
-                                <!-- <a href="" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a> -->
-                                <!-- <a href="" class="btn btn-sm text-dark p-0"><i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a> -->
-                                <button type="button" class="btn btn-sm text-dark p-0" data-toggle="modal" data-target="#detailModal">
+                                <button @click="get_product(index)" type="button" class="btn btn-sm text-dark p-0" data-toggle="modal" data-target="#detailModal">
                                     <i class="fas fa-eye text-primary mr-1"></i> View Detail
                                 </button>
-                                <button v-if="data.instock == 0" type="button" class="btn btn-sm text-dark p-0" disabled>
+                                <button v-if="data.instock === 0" type="button" class="btn btn-sm text-dark p-0" disabled>
                                     <i class="fas fa-shopping-cart text-primary mr-1"></i>หมด
                                 </button>
                                 <button v-else @click="add_to_cart(data.pro_id, data.pro_name, data.img, data.unit_name, data.instock, data.min)" type="button" class="btn btn-sm text-dark p-0">
@@ -157,15 +155,10 @@
         
     </div>
     <!-- Footer End -->
-
-    <!-- Button trigger modal -->
-    <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#detailModal">
-        Launch demo modal
-    </button> -->
     
     <!-- Detail Modal -->
     <div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="detailModalLabel">รายละเอียด</h5>
@@ -174,11 +167,74 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                ...
+                    <div v-if="product_detail" class="container-fluid py-5">
+                        <div class="row px-xl-5">
+                            <div class="col-lg-5 pb-5">
+                                <div id="product-carousel" class="carousel slide" data-ride="carousel">
+                                    <div class="carousel-inner border">
+                                        <div class="carousel-item">
+                                            <img class="w-100 h-100" :src="'../estock/uploads/' + product_detail.img" alt="Image">
+                                        </div>
+                                        <div class="carousel-item active">
+                                            <!-- <img class="w-100 h-100" src="img/product-2.jpg" alt="Image"> -->
+                                            <img class="w-100 h-100" :src="'../estock/uploads/' + product_detail.img" alt="Image">
+                                        </div>
+                                    </div>
+                                    <a class="carousel-control-prev" href="#product-carousel" data-slide="prev">
+                                        <i class="fa fa-2x fa-angle-left text-dark"></i>
+                                    </a>
+                                    <a class="carousel-control-next" href="#product-carousel" data-slide="next">
+                                        <i class="fa fa-2x fa-angle-right text-dark"></i>
+                                    </a>
+                                </div>
+                            </div>
+                
+                            <div class="col-lg-7 pb-5">
+                                <h3 class="font-weight-semi-bold">{{product_detail.pro_name}}</h3>
+                                <div class="d-flex mb-3">
+                                    <div class="text-primary mr-2">
+                                        <small class="fas fa-star"></small>
+                                        <small class="fas fa-star"></small>
+                                        <small class="fas fa-star"></small>
+                                        <small class="fas fa-star-half-alt"></small>
+                                        <small class="far fa-star"></small>
+                                    </div>
+                                    <small class="pt-1">(คลัง {{product_detail.instock}} {{product_detail.unit_name}})</small>
+                                </div>
+                                <!-- <h3 class="font-weight-semi-bold mb-4">$150.00</h3> -->
+                                <p class="mb-4">{{product_detail.pro_detail}}</p>
+                                
+                                <div class="d-flex align-items-center mb-4 pt-2">
+                                    <div class="input-group quantity mr-3" style="width: 130px;">
+                                        <div class="input-group-btn">
+                                            <button @click="click_qua_down_detail()" class="btn btn-primary btn-minus">
+                                                <i class="fa fa-minus"></i>
+                                            </button>
+                                        </div>
+                                        <input v-model="product_detail.qua" type="text" class="form-control bg-secondary text-center">
+                                        <div class="input-group-btn">
+                                            <button @click="click_qua_up_detail()" class="btn btn-primary btn-plus">
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <button v-if="product_detail.instock < 1" class="btn btn-primary px-3" disabled>
+                                        <i class="fa fa-shopping-cart mr-1"></i> 
+                                        Add To Cart
+                                    </button>
+                                    <button v-else @click="add_to_cart(product_detail.pro_id, product_detail.pro_name, product_detail.img, product_detail.unit_name, product_detail.instock, product_detail.qua, product_detail.min)" class="btn btn-primary px-3"  data-dismiss="modal">
+                                        <i class="fa fa-shopping-cart mr-1"></i> 
+                                        Add To Cart
+                                    </button>
+                                </div>
+                               
+                            </div>
+                        </div>                        
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
                 </div>
             </div>
         </div>
@@ -270,47 +326,45 @@
                 <div class="modal-body">
                     <div class="card">
                         <div class="card-body">
-                    <table class="table table-bordered">
-                        <thead>
-                          <tr>
-                            <th>วันที่เบิก</th>
-                            <th>code</th>
-                            <th>ผู้เบิก</th>
-                            <th >สถานะ</th>
-                            <th ></th>
-                          </tr>
-                        </thead>
-                        <tbody >
-                            <!-- {{Ord}} -->
-                          <tr v-for="data,index in Ord" v-if="Ord">
-                            <td>{{data.ord_date}}</td>
-                            <td>{{data.ord_id}}</td>
-                            <td>{{data.ord_own}}</td>
-                            <td>
-                              <button class="btn btn-block btn-danger btn-xs" v-if="data.st == 0" data-toggle="modal" data-target="#exampleModal3" >รอตรวจสอบ</button>
-                              <span v-if="data.st == 1" class="badge bg-primary">อนุมัติแล้ว</span>
-                            </td>
-                            <td>
-                              <button class="btn btn-block btn-primary btn-xs" data-toggle="modal" data-target="#exampleModal4" @click="view_record_list(data.ord_id)">รายละเอียด</button>                      
-                              <!-- <button class="btn btn btn-block btn-warning btn-xs" @click.prevent="b_Order_update(data.ord_id)" v-if="data.st == 0" >Update</button>   -->
-                              <button class="btn btn-block btn-danger btn-xs" @click.prevent="destroy_Order(data.ord_id)" v-if="data.st == 0">Delete</button>  
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                      </div>
-                      </div>
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>วันที่เบิก</th>
+                                    <th>code</th>
+                                    <th>ผู้เบิก</th>
+                                    <th >สถานะ</th>
+                                    <th ></th>
+                                </tr>
+                                </thead>
+                                <tbody >
+                                <tr v-for="data,index in Ord" v-if="Ord">
+                                    <td>{{data.ord_date}}</td>
+                                    <td>{{data.ord_id}}</td>
+                                    <td>{{data.ord_own}}</td>
+                                    <td>
+                                        <!-- <button class="btn btn-block btn-danger btn-xs" v-if="data.st == 0" data-toggle="modal" data-target="#exampleModal3" >รอตรวจสอบ</button> -->
+                                        <span v-if="data.st == 0" class="badge bg-danger text-white">รอตรวจสอบ</span>
+                                        <span v-if="data.st == 1" class="badge bg-primary">อนุมัติแล้ว</span>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-block btn-primary btn-xs" data-toggle="modal" data-target="#exampleModal4" @click="view_record_list(data.ord_id)">รายละเอียด</button>                      
+                                        <button class="btn btn-block btn-danger btn-xs" @click.prevent="destroy_Order(data.ord_id)" v-if="data.st == 0">Delete</button>  
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Detail Modal -->
+    <!-- View Record Modal -->
 
-<!-- //********** รายละเอียด *********** */ -->
+    <!-- //********** รายละเอียด View Record List *********** */ -->
     <div class="modal fade" id="exampleModal4"  data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg"  role="document">
             <div class="modal-content">
@@ -322,77 +376,65 @@
                 </div>
                 <div class="modal-body"> 
                     <div class="invoice p-3 mb-3">
-                    <!-- {{Order}} -->
                         <div class="row">
                             <div class="col-12">
-                            <h4><i class="fas fa-globe"></i> ใบเบิกวัสดุ.
-                            <!-- <small class="float-right">Date: {{Ord[0].ord_date}}</small> -->
-                            </h4>
+                                <h4><i class="fas fa-globe"></i> ใบเบิกวัสดุ.
+                                <!-- <small class="float-right">Date: {{Ord[0].ord_date}}</small> -->
+                                </h4>
+                            </div>
                         </div>
-                    </div>
-                    <div class="row invoice-info">
-                        <div class="col-sm-4 invoice-col">
-                        ผู้เบิก : <strong v-if="Ord_lists[0]">{{Ord_lists[0].ord_own}}</strong>
-                        <!-- <address>
-                            <strong v-if="Ord_lists[0]">{{Ord_lists[0].ord_own}}</strong><br>
-                        </address> -->
-                    </div>
-
-                    <div class="col-sm-4 invoice-col">
-                        <!-- To
-                        <address>
-                        <strong>...</strong><br>
-                        </address> -->
-                    </div>
-
-                    <div class="col-sm-4 invoice-col">
-                        <b v-if="Ord_lists[0]">CODE #{{Ord[0].ord_id}}</b><br>
-                        <b v-if="Ord_lists[0]">วันที่เบิก #{{Ord[0].ord_date}}</b><br>
-                    </div>
-                    </div>
-
-                    <div class="row">
-                    <div class="col-12 table-responsive">
-                        <table class="table table-striped">
-                        <thead>
-                            <tr>
-                            <th>#</th>
-                            <th>Product</th>
-                            <th>หน่วยนับ</th>
-                            <th>จำนวนที่ขอเบิก</th>
-                            <th>หมายเหตุ</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="orl,index in Ord_lists">
-                            <td>{{index + 1 }}</td>
-                            <td>{{orl.pro_name}}</td>
-                            <td>{{orl.unit_name}}</td>
-                            <td>{{orl.qua}}</td>
-                            <td>
-                                <!-- <button class="btn btn-danger" v-if="orl.qua > orl.instock || orl.qua == 0"><i class="fas fa-times"></i></button> -->
-                                {{orl.comment}}
-
-                            </td>
-                            </tr>            
-                            
-                        </tbody>
-                        </table>
-                    </div>
-                    </div>
-                    <div class="row no-print">
-                    <div class="col-12">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal"  >Close</button> 
-                    </div>
-                    </div>
+                        <div class="row invoice-info">
+                            <div class="col-sm-4 invoice-col">
+                                ผู้เบิก : <strong v-if="Ord_lists[0]">{{Ord_lists[0].ord_own}}</strong>
+                            </div>
+                            <div class="col-sm-4 invoice-col">
+                            <!-- To
+                            <address>
+                            <strong>...</strong><br>
+                            </address> -->
+                            </div>
+                            <div class="col-sm-4 invoice-col">
+                                <b v-if="Ord_lists[0]">CODE #{{Ord[0].ord_id}}</b><br>
+                                <b v-if="Ord_lists[0]">วันที่เบิก #{{Ord[0].ord_date}}</b><br>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Product</th>
+                                            <th>หน่วยนับ</th>
+                                            <th>จำนวนที่ขอเบิก</th>
+                                            <th>หมายเหตุ</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="orl,index in Ord_lists">
+                                            <td>{{index + 1 }}</td>
+                                            <td>{{orl.pro_name}}</td>
+                                            <td>{{orl.unit_name}}</td>
+                                            <td>{{orl.qua}}</td>
+                                            <td>
+                                                {{orl.comment}}
+                                            </td>
+                                        </tr> 
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row no-print">
+                            <div class="col-12">
+                             <button type="button" class="btn btn-secondary" data-dismiss="modal"  >Close</button> 
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button v-if="Ord_lists[0] && Ord_lists[0].st === 0" class="btn btn-danger btn-xs" @click.prevent="destroy_Order(Ord_lists[0].ord_id)">ยกเลิกใบเบิกนี้</button>  
-                            
-                </div>
-                            
+                </div>                            
             </div>
         </div>
     </div>

@@ -10,6 +10,8 @@ Vue.createApp({
       carts:[],
       user:'',
       url_img:'./node_modules/admin-lte/dist/img/user2-160x160.jpg',
+      Ord:'',
+      Ord_lists:''
     }
   },
   mounted(){
@@ -112,39 +114,143 @@ Vue.createApp({
     },
     send_order(){
       if(this.carts[0].pro_id != '' && this.carts[0].qua != 0){
-        var jwt = localStorage.getItem("jwt");
-        axios.post(url_base + '/estock/api/orders/orders_by_user.php',{carts:this.carts, action:'insert'},{ headers: {"Authorization" : `Bearer ${jwt}`}})
-            .then(response => {
-                if (response.data.status == 'success') {
-                  Swal.fire({
-                    icon: response.data.status,
-                    title: response.data.massege,
-                    showConfirmButton: false,
-                    timer: 1500
-                  });
-                  this.$refs['cart_modal_close'].click();
-                    this.carts = []
-                }else{
-                  Swal.fire({
-                    icon: response.data.status,
-                    title: response.data.massege,
-                    showConfirmButton: false,
-                    timer: 1500
-                  })
-                }
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-      }else{
         Swal.fire({
-                    icon: 'error',
-                    title: 'กรุณาตรวจสอบการป้อนข้อมูล',
-                    showConfirmButton: false,
-                    timer: 1500
-                  });
+          title: 'Are you sure?',
+          text: "You won't be able to revert this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            var jwt = localStorage.getItem("jwt");
+            axios.post(url_base + '/estock/api/orders/orders_by_user.php',{carts:this.carts, action:'insert'},{ headers: {"Authorization" : `Bearer ${jwt}`}})
+                .then(response => {
+                    if (response.data.status == 'success') {
+                      Swal.fire({
+                        icon: response.data.status,
+                        title: response.data.massege,
+                        showConfirmButton: false,
+                        timer: 1500
+                      });
+                      this.$refs['cart_modal_close'].click();
+                        this.carts = []
+                    }else{
+                      Swal.fire({
+                        icon: response.data.status,
+                        title: response.data.massege,
+                        showConfirmButton: false,
+                        timer: 1500
+                      })
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+          }else{
+            Swal.fire({
+                  icon: 'error',
+                  title: 'กรุณาตรวจสอบการป้อนข้อมูล',
+                  showConfirmButton: false,
+                  timer: 1500
+                });
+          }
+        });
       }
     },
+    view_record(){
+      var jwt = localStorage.getItem("jwt");
+      axios.post(url_base + '/estock/api/orders/get_orders_by_user.php',{},{ headers: {"Authorization" : `Bearer ${jwt}`}})
+      .then(response => {
+          if (response.data.status == 'success') {
+            Swal.fire({
+              icon: response.data.status,
+              title: response.data.massege,
+              showConfirmButton: false,
+              timer: 1000
+            });
+            this.Ord = response.data.respJSON;
+          }else{
+            Swal.fire({
+              icon: response.data.status,
+              title: response.data.massege,
+              showConfirmButton: false,
+              timer: 1000
+            })
+          }
+      })
+      .catch(function (error) {
+          console.log(error);
+      });
+    },
+    view_record_list(ord_id){
+      var jwt = localStorage.getItem("jwt");
+      axios.post(url_base + '/estock/api/orders/get_order_by_user.php',{ord_id:ord_id},{ headers: {"Authorization" : `Bearer ${jwt}`}})
+      .then(response => {
+          if (response.data.status == 'success') {
+            Swal.fire({
+              icon: response.data.status,
+              title: response.data.massege,
+              showConfirmButton: false,
+              timer: 1000
+            });
+            this.Ord_lists = response.data.respJSON;
+          }else{
+            Swal.fire({
+              icon: response.data.status,
+              title: response.data.massege,
+              showConfirmButton: false,
+              timer: 1000
+            })
+          }
+      })
+      .catch(function (error) {
+          console.log(error);
+      });
+    },
+    destroy_Order(ord_id){
+      Swal.fire({
+          title: 'Are you sure?',
+          text: "You won't be able to revert this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            var jwt = localStorage.getItem("jwt");
+            this.Ord[0].action = 'delete';  
+            this.Ord[0].ord_id = ord_id;  
+            axios.post(url_base + '/estock/api/orders/orders_action.php',{Ord:this.Ord},{ headers: {"Authorization" : `Bearer ${jwt}`}})
+              .then(response => {
+                  if (response.data.status == 'success') {
+                    Swal.fire({
+                      icon: response.data.status,
+                      title: response.data.massege,
+                      showConfirmButton: false,
+                      timer: 1500
+                    })
+                    this.view_record();                     
+                    this.$refs['ord_lists_close'].click();
+                       
+                  }else{
+                    Swal.fire({
+                      icon: response.data.status,
+                      title: response.data.massege,
+                      showConfirmButton: false,
+                      timer: 1500
+                    })
+                  }
+              })
+              .catch(function (error) {
+                  console.log(error);
+              });
+              
+          }
+        });            
+  },
     
     logout() {
       Swal.fire({
@@ -157,9 +263,35 @@ Vue.createApp({
         confirmButtonText: 'Yes !'
       }).then((result) => {
         if (result.isConfirmed) {
-          localStorage.removeItem("jwt");      
-          localStorage.removeItem("user_data"); 
-          window.location.href = './login.html';
+          var jwt = localStorage.getItem("jwt");
+          axios.post(url_base + '/estock/api/auth/logout.php',{},{ headers: {"Authorization" : `Bearer ${jwt}`}})
+            .then(response => {
+                if (response.data.status == 'success') {
+                  Swal.fire({
+                    icon: response.data.status,
+                    title: response.data.massege,
+                    showConfirmButton: false,
+                    timer: 1000
+                  })
+                  localStorage.removeItem("jwt");      
+                  localStorage.removeItem("user_data");
+                  setTimeout(function() {
+                    window.location.href = './login.html';
+                  }, 1001);                     
+                     
+                }else{
+                  Swal.fire({
+                    icon: response.data.status,
+                    title: response.data.massege,
+                    showConfirmButton: false,
+                    timer: 1500
+                  })
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+          
         }
       })    
     },  

@@ -11,7 +11,8 @@ Vue.createApp({
       user:'',
       url_img:'./node_modules/admin-lte/dist/img/user2-160x160.jpg',
       Ord:'',
-      Ord_lists:''
+      Ord_lists:'',
+      product_detail:''
     }
   },
   mounted(){
@@ -36,6 +37,36 @@ Vue.createApp({
           .catch(function (error) {
               console.log(error);
           });
+    },
+    get_product(index){
+      this.product_detail = this.datas[index]
+      this.product_detail.qua = ''
+      if(this.product_detail.qua < this.product_detail.min){ this.product_detail.qua = this.product_detail.min}
+      if(this.product_detail.qua > this.product_detail.instock){ this.product_detail.qua = this.product_detail.instock}
+    },
+    ck_qua_input_detail(){
+      if(this.product_detail.qua < this.product_detail.min){ this.product_detail.qua = this.product_detail.min}
+      if(this.product_detail.qua > this.product_detail.instock){ this.product_detail.qua = this.product_detail.instock}
+    },
+    click_qua_down_detail(){
+      val = this.product_detail.min
+      this.product_detail.qua = this.product_detail.qua - val
+      this.ck_qua_input_detail()
+    },    
+    click_qua_up_detail(){
+      val = this.product_detail.min
+      this.product_detail.qua = this.product_detail.qua + val
+      this.ck_qua_input_detail()
+    },
+    add_to_cart_detail(pro_id, pro_name, img, unit_name, instock, qua, min){
+      this.carts.push({pro_id:pro_id, pro_name:pro_name, img:img, unit_name:unit_name, instock:instock, qua:qua, min:min})
+      Swal.fire({
+        title:  pro_name,
+        text: "ใส่ในตะกร้าแล้ว",
+        icon: 'success',
+        timer: 1000,
+      })
+      this.$refs['cart_show'].click();
     },
     get_catalogs(){
       axios.post(url_base + '/estock/api/catalogs/read_catalogs_all.php')
@@ -164,12 +195,12 @@ Vue.createApp({
       axios.post(url_base + '/estock/api/orders/get_orders_by_user.php',{},{ headers: {"Authorization" : `Bearer ${jwt}`}})
       .then(response => {
           if (response.data.status == 'success') {
-            Swal.fire({
-              icon: response.data.status,
-              title: response.data.massege,
-              showConfirmButton: false,
-              timer: 1000
-            });
+            // Swal.fire({
+            //   icon: response.data.status,
+            //   title: response.data.massege,
+            //   showConfirmButton: false,
+            //   timer: 1000
+            // });
             this.Ord = response.data.respJSON;
           }else{
             Swal.fire({
@@ -189,12 +220,12 @@ Vue.createApp({
       axios.post(url_base + '/estock/api/orders/get_order_by_user.php',{ord_id:ord_id},{ headers: {"Authorization" : `Bearer ${jwt}`}})
       .then(response => {
           if (response.data.status == 'success') {
-            Swal.fire({
-              icon: response.data.status,
-              title: response.data.massege,
-              showConfirmButton: false,
-              timer: 1000
-            });
+            // Swal.fire({
+            //   icon: response.data.status,
+            //   title: response.data.massege,
+            //   showConfirmButton: false,
+            //   timer: 1000
+            // });
             this.Ord_lists = response.data.respJSON;
           }else{
             Swal.fire({

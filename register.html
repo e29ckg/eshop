@@ -1,0 +1,150 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AdminLTE 3 | Registration Page</title>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+
+<link rel="stylesheet" href="../estock/node_modules/admin-lte/plugins/fontawesome-free/css/all.min.css">
+
+<link rel="stylesheet" href="../estock/node_modules/admin-lte/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+
+<link rel="stylesheet" href="../estock/node_modules/admin-lte/dist/css/adminlte.min.css?v=3.2.0">
+<<!-- <script nonce="b1fecd1e-2e92-40a3-aee0-cd738882af29">(function(w,d){!function(a,e,t,r){a.zarazData=a.zarazData||{},a.zarazData.executed=[],a.zaraz={deferred:[]},a.zaraz.q=[],a.zaraz._f=function(e){return function(){var t=Array.prototype.slice.call(arguments);a.zaraz.q.push({m:e,a:t})}};for(const e of["track","set","ecommerce","debug"])a.zaraz[e]=a.zaraz._f(e);a.addEventListener("DOMContentLoaded",(()=>{var t=e.getElementsByTagName(r)[0],z=e.createElement(r),n=e.getElementsByTagName("title")[0];for(n&&(a.zarazData.t=e.getElementsByTagName("title")[0].text),a.zarazData.w=a.screen.width,a.zarazData.h=a.screen.height,a.zarazData.j=a.innerHeight,a.zarazData.e=a.innerWidth,a.zarazData.l=a.location.href,a.zarazData.r=e.referrer,a.zarazData.k=a.screen.colorDepth,a.zarazData.n=e.characterSet,a.zarazData.o=(new Date).getTimezoneOffset(),a.zarazData.q=[];a.zaraz.q.length;){const e=a.zaraz.q.shift();a.zarazData.q.push(e)}z.defer=!0,z.referrerPolicy="origin",z.src="/cdn-cgi/zaraz/s.js?z="+btoa(encodeURIComponent(JSON.stringify(a.zarazData))),t.parentNode.insertBefore(z,t)}))}(w,d,0,"script");})(window,document);</script></head> -->
+<body class="hold-transition register-page">
+    <div class="register-box">
+        <div class="register-logo">
+            <a href="#"><b>Admin</b>LTE</a>
+        </div>
+        <div class="card">
+            <div class="card-body register-card-body">
+                <p class="login-box-msg">Register a new membership</p>
+                <form id="form">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control " placeholder="ชื่อ - นามสกุล" id="fullname">
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-user"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="input-group mb-3">
+                    <input type="email" class="form-control" placeholder="Email" id="email">
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-envelope"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Username" id="username">
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-envelope"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="input-group mb-3">
+                    <input type="password" class="form-control" placeholder="Password" id="password">
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-lock"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="input-group mb-3">
+                    <input type="password" class="form-control" placeholder="Retype password" id="password2">
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-lock"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-8">
+                        <div class="icheck-primary w-100">
+                            <!-- <input type="checkbox" id="agreeTerms" name="terms" value="agree">
+                            <label for="agreeTerms">
+                                I agree to the <a href="#">terms</a>
+                            </label> -->
+                        </div>
+                    </div>
+
+                    <div class="col-4">
+                        <button type="submit" class="btn btn-primary btn-block">Register</button>
+                    </div>
+
+                </div>
+                </form>
+                <a href="./login.php" class="text-center">I already have a membership</a>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.16/dist/sweetalert2.all.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/easing/easing.min.js"></script>
+    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="./node_modules/axios/dist/axios.min.js"></script>
+    <script src="./node_modules/vue/dist/vue.global.js"></script>
+    <script src="./node_modules/vue/dist/vue.global.prod.js"></script>
+    <script>
+var url_base = window.location.protocol + '//' + window.location.host;
+
+document.getElementById("form").addEventListener("submit", function(event){
+      event.preventDefault()
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+      const password2 = document.getElementById("password2").value;
+      const email = document.getElementById("email").value;
+      const fullname = document.getElementById("fullname").value;
+        
+      if(username != '' && email != '' && fullname != '' && password == password2){
+        const xhttp = new XMLHttpRequest();
+        xhttp.open("POST", url_base + "/../estock/api/auth/register.php");
+        xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        xhttp.send(JSON.stringify({
+          "username": username,
+          "password": password,
+          "email": email,
+          "fullname": fullname,
+        }));
+        xhttp.onreadystatechange = function () {
+          if (this.readyState == 4) {
+            const objects = JSON.parse(this.responseText);
+            console.log(objects);
+            if (objects['status'] == 'ok') {
+                Swal.fire({
+                    text: objects['message'],
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        localStorage.setItem("jwt", objects['jwt']);
+                        window.location.href = './index.html';
+                    }
+              });
+            } else {
+              Swal.fire({
+                text: objects['message'],
+                icon: 'error',
+                confirmButtonText: 'OK'
+              });
+            }
+          }
+        };
+        return false;
+      }else{
+       
+        alert('กรุณาตรวจสอบการป้อนข้อมูล');
+      }
+});
+
+    </script>
+</body>
+</html>

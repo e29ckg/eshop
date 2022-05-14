@@ -12,26 +12,36 @@ Vue.createApp({
       url_img:'./node_modules/admin-lte/dist/img/user2-160x160.jpg',
       Ord:'',
       Ord_lists:'',
-      product_detail:''
+      product_detail:'',
+      c_order0:''
     }
   },
   mounted(){
     this.get_products()
     this.get_fullname()
     this.get_catalogs()
+    this.count_order0()
   },
   methods: {
+    count_order0(){
+      axios.post(url_base + '/estock/api/orders/orders_shop_by_user0.php',{user_own:this.user.fullname})
+        .then(response => {
+            if(response.data.status) { 
+              this.c_order0 = response.data.respJSON;
+            }else {
+              this.c_order0 = 0;
+            }
+        })
+    },
     get_fullname() {
       this.user = JSON.parse(localStorage.getItem("user_data"));
       // this.user = localStorage.getItem("user_data");
     },
     get_products(){
-      axios.post(url_base + '/estock/api/products/get_products.php')
+      axios.post(url_base + '/estock/api/products/get_products_shop.php')
           .then(response => {
-              // console.log(response.data);
               if (response.data.status) {
-                  this.datas = response.data.respJSON;
-                  // console.log(this.datas);                   
+                  this.datas = response.data.respJSON;          
               }
           })
           .catch(function (error) {
@@ -40,22 +50,22 @@ Vue.createApp({
     },
     get_product(index){
       this.product_detail = this.datas[index]
-      this.product_detail.qua = ''
-      if(this.product_detail.qua < this.product_detail.min){ this.product_detail.qua = this.product_detail.min}
-      if(this.product_detail.qua > this.product_detail.instock){ this.product_detail.qua = this.product_detail.instock}
+      this.product_detail.qua = 1
+      if(this.product_detail.qua < this.product_detail.min){ this.product_detail.qua = Number(this.product_detail.min)}
+      if(this.product_detail.qua > this.product_detail.instock){ this.product_detail.qua = Number(this.product_detail.instock)}
     },
     ck_qua_input_detail(){
-      if(this.product_detail.qua < this.product_detail.min){ this.product_detail.qua = this.product_detail.min}
-      if(this.product_detail.qua > this.product_detail.instock){ this.product_detail.qua = this.product_detail.instock}
+      if(Number(this.product_detail.qua) < Number(this.product_detail.min)){ this.product_detail.qua = Number(this.product_detail.min)}
+      if(Number(this.product_detail.qua) > Number(this.product_detail.instock)){ this.product_detail.qua = Number(this.product_detail.instock)}
     },
     click_qua_down_detail(){
       val = this.product_detail.min
-      this.product_detail.qua = this.product_detail.qua - val
+      this.product_detail.qua = Number(this.product_detail.qua) - Number(val)
       this.ck_qua_input_detail()
     },    
     click_qua_up_detail(){
-      val = this.product_detail.min
-      this.product_detail.qua = this.product_detail.qua + val
+      val = Number(this.product_detail.min)
+      this.product_detail.qua = Number(this.product_detail.qua) + val
       this.ck_qua_input_detail()
     },
     add_to_cart_detail(pro_id, pro_name, img, unit_name, instock, qua, min){
@@ -111,12 +121,11 @@ Vue.createApp({
             console.log(error);
         });
       this.$refs['cat_menu'].click();
-
     },  
     add_to_cart(pro_id,pro_name, img, unit_name,instock,min){
-      if(min > instock){qua = instock}
-      else if(min < 1){qua = 1}
-      else{qua = min}
+      if(Number(min) > Number(instock)){qua = instock}
+      else if(Number(min) < 1){qua = 1}
+      else{qua = Number(min)}
       this.carts.push({pro_id:pro_id, pro_name:pro_name, img:img, unit_name:unit_name, instock:instock, qua:qua, min:min})
       Swal.fire({
         title:  pro_name,
@@ -127,17 +136,17 @@ Vue.createApp({
       this.$refs['cart_show'].click();
     },
     ck_qua_input(index){
-      if(this.carts[index].qua < this.carts[index].min){ this.carts[index].qua = this.carts[index].min}
-      if(this.carts[index].qua > this.carts[index].instock){ this.carts[index].qua = this.carts[index].instock}
+      if(Number(this.carts[index].qua) < Number(this.carts[index].min)){ this.carts[index].qua = Number(this.carts[index].min)}
+      if(Number(this.carts[index].qua) > Number(this.carts[index].instock)){ this.carts[index].qua = Number(this.carts[index].instock)}
     },
     click_qua_down(index,min){
-      val = this.carts[index].min
-      this.carts[index].qua = this.carts[index].qua - val
+      val = Number(this.carts[index].min)
+      this.carts[index].qua = Number(this.carts[index].qua) - val
       this.ck_qua_input(index)
     },    
     click_qua_up(index){
-      val = this.carts[index].min
-      this.carts[index].qua = this.carts[index].qua + val
+      val = Number(this.carts[index].min)
+      this.carts[index].qua = Number(this.carts[index].qua) + val
       this.ck_qua_input(index)
     },
     del_cart_list(index){
@@ -166,7 +175,8 @@ Vue.createApp({
                         timer: 1500
                       });
                       this.$refs['cart_modal_close'].click();
-                        this.carts = []
+                      this.carts = []
+                      this.count_order0()
                     }else{
                       Swal.fire({
                         icon: response.data.status,
@@ -217,7 +227,7 @@ Vue.createApp({
     },
     view_record_list(ord_id){
       var jwt = localStorage.getItem("jwt");
-      axios.post(url_base + '/estock/api/orders/get_order_by_user.php',{ord_id:ord_id},{ headers: {"Authorization" : `Bearer ${jwt}`}})
+      axios.post(url_base + '/estock/api/orders/get_orderlists_by_user.php',{ord_id:ord_id},{ headers: {"Authorization" : `Bearer ${jwt}`}})
       .then(response => {
           if (response.data.status == 'success') {
             // Swal.fire({
@@ -263,7 +273,8 @@ Vue.createApp({
                       showConfirmButton: false,
                       timer: 1500
                     })
-                    this.view_record();                     
+                    this.view_record();  
+                    this.count_order0()                   
                     this.$refs['ord_lists_close'].click();
                        
                   }else{
@@ -281,7 +292,7 @@ Vue.createApp({
               
           }
         });            
-  },
+    },
     
     logout() {
       Swal.fire({
@@ -325,9 +336,18 @@ Vue.createApp({
           
         }
       })    
-    },  
-    click_cart(){
-      console.log('click_cart_test')
+    },
+    formatCurrency(number) {
+      number = parseFloat(number);
+      return number.toFixed(2).replace(/./g, function(c, i, a) {
+          return i > 0 && c !== "." && (a.length - i) % 3 === 0 ? "," + c : c;
+      });
+    },
+    formatCurrency0(number) {
+      number = parseFloat(number);
+      return number.toFixed(0).replace(/./g, function(c, i, a) {
+          return i > 0 && c !== "." && (a.length - i) % 3 === 0 ? "," + c : c;
+      });
     },
     test(){
       console.log('test')

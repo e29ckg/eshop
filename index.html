@@ -343,7 +343,7 @@
                         <div class="card-body">
                             <table class="table table-bordered">
                                 <thead>
-                                <tr>
+                                <tr class="text-center">
                                     <th>วันที่เบิก</th>
                                     <th>code</th>
                                     <th>ผู้เบิก</th>
@@ -352,7 +352,7 @@
                                 </tr>
                                 </thead>
                                 <tbody >
-                                <tr v-for="data,index in Ord" v-if="Ord">
+                                <tr v-for="data,index in Ord" v-if="Ord" class="text-center">
                                     <td>{{data.ord_date}}</td>
                                     <td>{{data.ord_id}}</td>
                                     <td>{{data.ord_own}}</td>

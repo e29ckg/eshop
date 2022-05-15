@@ -78,7 +78,7 @@ Vue.createApp({
 
 
     },
-    logout() {
+    logout() {      
       Swal.fire({
         title: 'Are you sure?',
         text: "You won't Logout!",
@@ -89,9 +89,35 @@ Vue.createApp({
         confirmButtonText: 'Yes !'
       }).then((result) => {
         if (result.isConfirmed) {
-          localStorage.removeItem("jwt");      
-          localStorage.removeItem("user_data"); 
-          window.location.href = './login.html';
+          axios.post(url_base + 'api/auth/logout.php',{},{ 
+            headers: {
+                "Access-Control-Allow-Origin" : "*",
+                "Content-type": "Application/json",
+                // "Authorization": `Bearer ${jwt}`
+                "Authorization" : 'Bearer '+ jwt 
+              }})
+                .then(response => {                            
+                    if (response.data.status == 'success' ) {  
+                      localStorage.removeItem("jwt");
+                      localStorage.removeItem("user_data");    
+                      swal.fire({
+                        icon: response.data.status,
+                        title: response.data.message,
+                        showConfirmButton: true,
+                        timer: 1000
+                      });
+                      setTimeout(function() {
+                        window.location.href = './login';
+                      }, 3000); 
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    localStorage.removeItem("jwt");
+                    localStorage.removeItem("user_data"); 
+                    window.location.href = './login';
+                });
+
         }
       })    
     },

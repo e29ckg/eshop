@@ -1,7 +1,8 @@
 var url_base = window.location.protocol + '//' + window.location.host + '/estock/'
 
 var jwt = localStorage.getItem("jwt");
-if (jwt == null) {
+var user_data = localStorage.getItem("user_data");
+if (jwt == null || user_data == null) {
   window.location.href = './login.html'
 }  
 
@@ -15,7 +16,7 @@ Vue.createApp({
   },
   mounted(){
     this.get_fullname()
-    this.ck_protect()
+    // this.ck_protect()
     var jwt = localStorage.getItem("jwt")
     this.protected(jwt)
   },
@@ -36,7 +37,7 @@ Vue.createApp({
     },
 
     protected(jwt) {
-      axios.post(url_base + '/api/auth/protected.php',{},{ 
+      axios.post(url_base + 'api/auth/protected.php',{},{ 
         headers: {
             "Access-Control-Allow-Origin" : "*",
             "Content-type": "Application/json",
@@ -46,14 +47,12 @@ Vue.createApp({
                 // console.log(response.data);
                 if (response.data.status == 'ok' ) {
                   user_data = JSON.stringify(response.data.user_data)
-                  localStorage.setItem("jwt", response.data.jwt);
-                  localStorage.setItem("user_data",user_data);
                 }else{
                   localStorage.removeItem("jwt");
                   localStorage.removeItem("user_data");    
                   swal.fire({
-                    icon: objects['status'],
-                    title: objects['message'],
+                    icon: 'error',
+                    title:response.data.message,
                     showConfirmButton: true,
                     timer: 1000
                   });
@@ -65,8 +64,16 @@ Vue.createApp({
             .catch(function (error) {
                 console.log(error);
                 localStorage.removeItem("jwt");
-                  localStorage.removeItem("user_data"); 
+                localStorage.removeItem("user_data"); 
+                swal.fire({
+                  icon: 'error',
+                  title:response.data.message,
+                  showConfirmButton: true,
+                  timer: 1000
+                });
+                setTimeout(function() {
                   window.location.href = './login.html';
+                }, 1001); 
             });
 
 

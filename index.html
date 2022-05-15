@@ -139,7 +139,7 @@
                                 <button @click="get_product(index)" type="button" class="btn btn-sm text-dark p-0" data-toggle="modal" data-target="#detailModal">
                                     <i class="fas fa-eye text-primary mr-1"></i> View Detail
                                 </button>
-                                <button v-if="data.instock === 0" type="button" class="btn btn-sm text-dark p-0" disabled>
+                                <button v-if="Number(data.instock) === 0" type="button" class="btn btn-sm text-dark p-0" disabled>
                                     <i class="fas fa-shopping-cart text-primary mr-1"></i>หมด
                                 </button>
                                 <button v-else @click="add_to_cart(data.pro_id, data.pro_name, data.img, data.unit_name, data.instock, data.min)" type="button" class="btn btn-sm text-dark p-0">
@@ -425,6 +425,7 @@
                                             <th>Product</th>
                                             <th>หน่วยนับ</th>
                                             <th>จำนวนที่ขอเบิก</th>
+                                            <th>จำนวนที่ได้รับ</th>
                                             <th>หมายเหตุ</th>
                                         </tr>
                                     </thead>
@@ -439,6 +440,7 @@
                                             <td>{{orl.pro_name}}</td>
                                             <td>{{orl.unit_name}}</td>
                                             <td>{{formatCurrency0(orl.qua)}}</td>
+                                            <td>{{formatCurrency0(orl.qua_pay)}}</td>
                                             <td>
                                                 {{orl.comment}}
                                             </td>

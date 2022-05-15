@@ -271,11 +271,14 @@ Vue.createApp({
                       icon: response.data.status,
                       title: response.data.massege,
                       showConfirmButton: false,
-                      timer: 1500
+                      timer: 1000
                     })
                     this.view_record();  
                     this.count_order0()                   
                     this.$refs['ord_lists_close'].click();
+                    setTimeout(function() {
+                      window.location.href = './index.html';
+                    }, 1001);
                        
                   }else{
                     Swal.fire({

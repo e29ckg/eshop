@@ -51,8 +51,8 @@ Vue.createApp({
                   localStorage.removeItem("jwt");
                   localStorage.removeItem("user_data");    
                   swal.fire({
-                    icon: 'error',
-                    title:response.data.message,
+                    icon: 'success',
+                    title: 'ออกจากระบบ',
                     showConfirmButton: true,
                     timer: 1000
                   });
@@ -67,7 +67,7 @@ Vue.createApp({
                 localStorage.removeItem("user_data"); 
                 swal.fire({
                   icon: 'error',
-                  title:response.data.message,
+                  title: 'ออกจากระบบ',
                   showConfirmButton: true,
                   timer: 1000
                 });
@@ -101,8 +101,8 @@ Vue.createApp({
                       localStorage.removeItem("jwt");
                       localStorage.removeItem("user_data");    
                       swal.fire({
-                        icon: response.data.status,
-                        title: response.data.message,
+                        icon: 'error',
+                        title: 'ออกจากระบบ',
                         showConfirmButton: true,
                         timer: 1000
                       });

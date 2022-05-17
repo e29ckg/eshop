@@ -16,7 +16,7 @@ Vue.createApp({
   },
   mounted(){
     this.get_fullname()
-    // this.ck_protect()
+    this.ck_protect()
     var jwt = localStorage.getItem("jwt")
     this.protected(jwt)
   },
@@ -27,8 +27,7 @@ Vue.createApp({
     },
 
     ck_protect(){
-      var t = 6 * 60 * 1000
-      // var t = 3000
+      var t = 5 * 1000
       setInterval(()=> {
         var jwt = localStorage.getItem("jwt");
         this.protected(jwt);
@@ -37,27 +36,29 @@ Vue.createApp({
     },
 
     protected(jwt) {
-      axios.post(url_base + 'api/auth/protected.php',{},{ 
+      let url_base = window.location.protocol + '//' + window.location.host
+      axios.post(url_base + '/estock/api/auth/protected.php',{data:''},{ 
         headers: {
             "Access-Control-Allow-Origin" : "*",
             "Content-type": "Application/json",
-            "Authorization" : 'Bearer '+ jwt 
+            "Authorization": `Bearer ${jwt}`
+            // "Authorization" : 'Bearer '+ jwt 
           }})
-            .then(response => {              
-                // console.log(response.data);
+            .then(response => {  
+                       
                 if (response.data.status == 'ok' ) {
-                  user_data = JSON.stringify(response.data.user_data)
+                  user_data = JSON.stringify(response.data.user_data)            
                 }else{
                   localStorage.removeItem("jwt");
                   localStorage.removeItem("user_data");    
                   swal.fire({
-                    icon: 'success',
+                    icon: 'error',
                     title: 'ออกจากระบบ',
                     showConfirmButton: true,
                     timer: 1000
                   });
                   setTimeout(function() {
-                    window.location.href = './login.html';
+                    window.location.href = './login';
                   }, 1001); 
                 }
             })
@@ -67,15 +68,14 @@ Vue.createApp({
                 localStorage.removeItem("user_data"); 
                 swal.fire({
                   icon: 'error',
-                  title: 'ออกจากระบบ',
+                  title:'ออกจากระบบ',
                   showConfirmButton: true,
                   timer: 1000
                 });
                 setTimeout(function() {
-                  window.location.href = './login.html';
+                  window.location.href = './login';
                 }, 1001); 
             });
-
 
     },
     logout() {      

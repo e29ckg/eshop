@@ -213,6 +213,7 @@ Vue.createApp({
             // });
             this.Ord = response.data.respJSON;
           }else{
+            
             Swal.fire({
               icon: response.data.status,
               title: response.data.massege,
@@ -238,12 +239,7 @@ Vue.createApp({
             // });
             this.Ord_lists = response.data.respJSON;
           }else{
-            Swal.fire({
-              icon: response.data.status,
-              title: response.data.massege,
-              showConfirmButton: false,
-              timer: 1000
-            })
+            window.location.reload();
           }
       })
       .catch(function (error) {

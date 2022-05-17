@@ -27,7 +27,7 @@ Vue.createApp({
     },
 
     ck_protect(){
-      var t = 5 * 1000
+      var t = 60 * 1000
       setInterval(()=> {
         var jwt = localStorage.getItem("jwt");
         this.protected(jwt);
@@ -89,6 +89,7 @@ Vue.createApp({
         confirmButtonText: 'Yes !'
       }).then((result) => {
         if (result.isConfirmed) {
+          let url_base = window.location.protocol + '//' + window.location.host
           axios.post(url_base + 'api/auth/logout.php',{},{ 
             headers: {
                 "Access-Control-Allow-Origin" : "*",

@@ -170,7 +170,7 @@ Vue.createApp({
                     if (response.data.status == 'success') {
                       Swal.fire({
                         icon: response.data.status,
-                        title: response.data.massege,
+                        title: response.data.message,
                         showConfirmButton: false,
                         timer: 1500
                       });
@@ -180,7 +180,7 @@ Vue.createApp({
                     }else{
                       Swal.fire({
                         icon: response.data.status,
-                        title: response.data.massege,
+                        title: response.data.message,
                         showConfirmButton: false,
                         timer: 1500
                       })
@@ -207,7 +207,7 @@ Vue.createApp({
           if (response.data.status == 'success') {
             // Swal.fire({
             //   icon: response.data.status,
-            //   title: response.data.massege,
+            //   title: response.data.message,
             //   showConfirmButton: false,
             //   timer: 1000
             // });
@@ -216,7 +216,7 @@ Vue.createApp({
             
             Swal.fire({
               icon: response.data.status,
-              title: response.data.massege,
+              title: response.data.message,
               showConfirmButton: false,
               timer: 1000
             })
@@ -233,7 +233,7 @@ Vue.createApp({
           if (response.data.status == 'success') {
             // Swal.fire({
             //   icon: response.data.status,
-            //   title: response.data.massege,
+            //   title: response.data.message,
             //   showConfirmButton: false,
             //   timer: 1000
             // });
@@ -265,7 +265,7 @@ Vue.createApp({
                   if (response.data.status == 'success') {
                     Swal.fire({
                       icon: response.data.status,
-                      title: response.data.massege,
+                      title: response.data.message,
                       showConfirmButton: false,
                       timer: 1000
                     })
@@ -279,7 +279,7 @@ Vue.createApp({
                   }else{
                     Swal.fire({
                       icon: response.data.status,
-                      title: response.data.massege,
+                      title: response.data.message,
                       showConfirmButton: false,
                       timer: 1500
                     })
@@ -310,7 +310,7 @@ Vue.createApp({
                 if (response.data.status == 'success') {
                   Swal.fire({
                     icon: response.data.status,
-                    title: response.data.massege,
+                    title: response.data.message,
                     showConfirmButton: false,
                     timer: 1000
                   })
@@ -323,7 +323,7 @@ Vue.createApp({
                 }else{
                   Swal.fire({
                     icon: response.data.status,
-                    title: response.data.massege,
+                    title: response.data.message,
                     showConfirmButton: false,
                     timer: 1500
                   })

@@ -364,6 +364,7 @@
                                     <td>
                                         <button class="btn btn-block btn-primary btn-xs" data-toggle="modal" data-target="#exampleModal4" @click="view_record_list(data.ord_id)">รายละเอียด</button>                      
                                         <button class="btn btn-block btn-danger btn-xs" @click.prevent="destroy_Order(data.ord_id)" v-if="data.st == 0">Delete</button>  
+                                        <button class="btn btn-block btn-success btn-xs" @click.prevent="order_print(data.ord_id)">พิมพ์</button>  
                                     </td>
                                 </tr>
                                 </tbody>

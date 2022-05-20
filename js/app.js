@@ -31,7 +31,7 @@ Vue.createApp({
     },
 
     ck_protect(){
-      var t = 3 * 1000
+      var t = 60 * 1000
       setInterval(()=> {
         this.protected();
         console.log(t++)

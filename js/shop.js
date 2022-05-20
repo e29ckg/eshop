@@ -1,8 +1,9 @@
-var url_base = window.location.protocol + '//' + window.location.host
+
 
 Vue.createApp({
   data() {
     return {
+      url_base:'',
       user:'',
       datas:'',
       q:'',
@@ -17,14 +18,28 @@ Vue.createApp({
     }
   },
   mounted(){
+    this.url_base = window.location.protocol + '//' + window.location.host
     this.get_products()
     this.get_fullname()
     this.get_catalogs()
     this.count_order0()
   },
   methods: {
+    order_print(ord_id){
+      axios.post(this.url_base + '/estock/api/orders/orders_print.php',{ord_id:ord_id})
+          .then(response => {
+              if (response.data.status) {
+                  ord_print = JSON.stringify(response.data)   
+                  localStorage.setItem("ord_print",ord_print)
+                  window.open(this.url_base + '/estock/orders-print.php','_blank')      
+              }
+          })
+          .catch(function (error) {
+              console.log(error);
+          });
+    },   
     count_order0(){
-      axios.post(url_base + '/estock/api/orders/orders_shop_by_user0.php',{user_own:this.user.fullname})
+      axios.post(this.url_base + '/estock/api/orders/orders_shop_by_user0.php',{user_own:this.user.fullname})
         .then(response => {
             if(response.data.status) { 
               this.c_order0 = response.data.respJSON;
@@ -38,7 +53,7 @@ Vue.createApp({
       // this.user = localStorage.getItem("user_data");
     },
     get_products(){
-      axios.post(url_base + '/estock/api/products/get_products_shop.php')
+      axios.post(this.url_base + '/estock/api/products/get_products_shop.php')
           .then(response => {
               if (response.data.status) {
                   this.datas = response.data.respJSON;          
@@ -79,7 +94,7 @@ Vue.createApp({
       this.$refs['cart_show'].click();
     },
     get_catalogs(){
-      axios.post(url_base + '/estock/api/catalogs/read_catalogs_all.php')
+      axios.post(this.url_base + '/estock/api/catalogs/read_catalogs_all.php')
           .then(response => {
               // console.log(response.data);
               if (response.data.status) {
@@ -94,7 +109,7 @@ Vue.createApp({
     ch_search_pro(){
       console.log(this.q)
       if(this.q.length > 0){
-        axios.post(url_base + '/estock/api/products/product_search.php',{q:this.q})
+        axios.post(this.url_base + '/estock/api/products/product_search.php',{q:this.q})
           .then(response => {
               if (response.data.status){
                 this.datas = response.data.respJSON;                    
@@ -111,7 +126,7 @@ Vue.createApp({
       this.q = ''
     },
     search_pro_cat(cat_name){
-      axios.post(url_base + '/estock/api/products/product_search_cat.php',{q:cat_name})
+      axios.post(this.url_base + '/estock/api/products/product_search_cat.php',{q:cat_name})
         .then(response => {
             if (response.data.status){
               this.datas = response.data.respJSON;                    
@@ -165,7 +180,7 @@ Vue.createApp({
         }).then((result) => {
           if (result.isConfirmed) {
             var jwt = localStorage.getItem("jwt");
-            axios.post(url_base + '/estock/api/orders/orders_by_user.php',{carts:this.carts, action:'insert'},{ headers: {"Authorization" : `Bearer ${jwt}`}})
+            axios.post(this.url_base + '/estock/api/orders/orders_by_user.php',{carts:this.carts, action:'insert'},{ headers: {"Authorization" : `Bearer ${jwt}`}})
                 .then(response => {
                     if (response.data.status == 'success') {
                       Swal.fire({
@@ -202,7 +217,7 @@ Vue.createApp({
     },
     view_record(){
       var jwt = localStorage.getItem("jwt");
-      axios.post(url_base + '/estock/api/orders/get_orders_by_user.php',{},{ headers: {"Authorization" : `Bearer ${jwt}`}})
+      axios.post(this.url_base + '/estock/api/orders/get_orders_by_user.php',{},{ headers: {"Authorization" : `Bearer ${jwt}`}})
       .then(response => {
           if (response.data.status == 'success') {
             // Swal.fire({
@@ -228,7 +243,7 @@ Vue.createApp({
     },
     view_record_list(ord_id){
       var jwt = localStorage.getItem("jwt");
-      axios.post(url_base + '/estock/api/orders/get_orderlists_by_user.php',{ord_id:ord_id},{ headers: {"Authorization" : `Bearer ${jwt}`}})
+      axios.post(this.url_base + '/estock/api/orders/get_orderlists_by_user.php',{ord_id:ord_id},{ headers: {"Authorization" : `Bearer ${jwt}`}})
       .then(response => {
           if (response.data.status == 'success') {
             // Swal.fire({
@@ -260,7 +275,7 @@ Vue.createApp({
             var jwt = localStorage.getItem("jwt");
             this.Ord[0].action = 'delete';  
             this.Ord[0].ord_id = ord_id;  
-            axios.post(url_base + '/estock/api/orders/orders_action.php',{Ord:this.Ord},{ headers: {"Authorization" : `Bearer ${jwt}`}})
+            axios.post(this.url_base + '/estock/api/orders/orders_action.php',{Ord:this.Ord},{ headers: {"Authorization" : `Bearer ${jwt}`}})
               .then(response => {
                   if (response.data.status == 'success') {
                     Swal.fire({
@@ -305,7 +320,7 @@ Vue.createApp({
       }).then((result) => {
         if (result.isConfirmed) {
           var jwt = localStorage.getItem("jwt");
-          axios.post(url_base + '/estock/api/auth/logout.php',{},{ headers: {"Authorization" : `Bearer ${jwt}`}})
+          axios.post(this.url_base + '/estock/api/auth/logout.php',{},{ headers: {"Authorization" : `Bearer ${jwt}`}})
             .then(response => {
                 if (response.data.status == 'success') {
                   Swal.fire({

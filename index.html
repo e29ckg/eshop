@@ -120,7 +120,7 @@
                     
                     <div class="col-lg-3 col-md-6 col-sm-12 pb-1" v-for="data,index in datas">
                         <div class="card product-item border-0 mt-2 h-100">
-                            <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
+                            <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0" @click="get_product(index)"  data-toggle="modal" data-target="#detailModal">
                                 <img class="img-fluid w-100" v-if="data.img" :src="'../estock/uploads/' + data.img" alt="pro_img">
                                 <img class="img-fluid w-100" v-else src="../estock//uploads/none.png" alt="">
                             </div>

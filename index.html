@@ -256,7 +256,7 @@
     </div>
     <!-- Detail Modal -->
 
-    <!-- Cart Modal -->
+    <!-- Cart Modal ตะกร้าสินค้า -->
     <div class="modal fade" id="cartModal" tabindex="-1" role="dialog" aria-labelledby="cartModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
@@ -293,7 +293,7 @@
                                             <td class="align-middle">
                                                 <div class="input-group quantity mx-auto" style="width: 150px;">
                                                     <div class="input-group-btn">
-                                                        <button @click="click_qua_down(index)" class="btn btn-sm btn-primary btn-minus" >
+                                                        <button @click="click_qua_down(index,min)" class="btn btn-sm btn-primary btn-minus" >
                                                             <i class="fa fa-minus"></i>
                                                         </button>
                                                     </div>
@@ -301,7 +301,7 @@
                                                     <input :value="formatCurrency0(ca.qua)" @keyup="ck_qua_input(index)" @change="ck_qua_input(index)" type="text" class="form-control form-control-sm bg-secondary text-center" disabled>
 
                                                     <div class="input-group-btn">
-                                                        <button  @click="click_qua_up(index)" class="btn btn-sm btn-primary btn-plus"><i class="fa fa-plus"></i></button>
+                                                        <button  @click="click_qua_up(index,min)" class="btn btn-sm btn-primary btn-plus"><i class="fa fa-plus"></i></button>
                                                     </div>
                                                 </div>
                                             </td>

@@ -180,9 +180,11 @@ Vue.createApp({
         }).then((result) => {
           if (result.isConfirmed) {
             var jwt = localStorage.getItem("jwt");
+            var user_data = localStorage.getItem("user_data");
             axios.post(this.url_base + '/estock/api/orders/orders_by_user.php',{carts:this.carts, action:'insert'},{ headers: {"Authorization" : `Bearer ${jwt}`}})
-                .then(response => {
-                    if (response.data.status == 'success') {
+            .then(response => {
+              if (response.data.status == 'success') {
+                      axios.post(this.url_base + '/estock/api/line/order.php', {carts:this.carts,user_data:user_data})
                       Swal.fire({
                         icon: response.data.status,
                         title: response.data.message,

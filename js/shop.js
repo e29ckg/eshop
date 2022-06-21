@@ -137,10 +137,10 @@ Vue.createApp({
         });
       this.$refs['cat_menu'].click();
     },  
-    add_to_cart(pro_id,pro_name, img, unit_name,instock,min){
-      if(Number(min) > Number(instock)){qua = instock}
-      else if(Number(min) < 1){qua = 1}
-      else{qua = Number(min)}
+    add_to_cart(pro_id,pro_name, img, unit_name, instock, qua, min){
+      if(Number(qua) > Number(instock)){qua = instock}
+      else if(Number(qua) < 1){qua = 1}
+      else{qua = Number(qua)}
       this.carts.push({pro_id:pro_id, pro_name:pro_name, img:img, unit_name:unit_name, instock:instock, qua:qua, min:min})
       Swal.fire({
         title:  pro_name,
@@ -159,7 +159,7 @@ Vue.createApp({
       this.carts[index].qua = Number(this.carts[index].qua) - val
       this.ck_qua_input(index)
     },    
-    click_qua_up(index){
+    click_qua_up(index,min){
       val = Number(this.carts[index].min)
       this.carts[index].qua = Number(this.carts[index].qua) + val
       this.ck_qua_input(index)

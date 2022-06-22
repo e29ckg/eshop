@@ -277,36 +277,36 @@ Vue.createApp({
             var jwt = localStorage.getItem("jwt");
             this.Ord[0].action = 'delete';  
             this.Ord[0].ord_id = ord_id;  
-            // axios.post(this.url_base + '/estock/api/orders/orders_action.php',{Ord:this.Ord},{ headers: {"Authorization" : `Bearer ${jwt}`}})
-            // .then(response => {
-            //   if (response.data.status == 'success') {
+            axios.post(this.url_base + '/estock/api/orders/orders_action.php',{Ord:this.Ord},{ headers: {"Authorization" : `Bearer ${jwt}`}})
+            .then(response => {
+              if (response.data.status == 'success') {
                     var user_data = localStorage.getItem("user_data");
                     axios.post(this.url_base + '/estock/api/line/order_cancel.php', {ord_id:ord_id,user_data:user_data})
-              //       Swal.fire({
-              //         icon: response.data.status,
-              //         title: response.data.message,
-              //         showConfirmButton: false,
-              //         timer: 1000
-              //       })
-              //       this.view_record();  
-              //       this.count_order0()                   
-              //       this.$refs['ord_lists_close'].click();
-              //       setTimeout(function() {
-              //         window.location.href = './index.html';
-              //       }, 1001);
+                    Swal.fire({
+                      icon: response.data.status,
+                      title: response.data.message,
+                      showConfirmButton: false,
+                      timer: 1000
+                    })
+                    this.view_record();  
+                    this.count_order0()                   
+                    this.$refs['ord_lists_close'].click();
+                    setTimeout(function() {
+                      window.location.href = './index.html';
+                    }, 1001);
                        
-              //     }else{
-              //       Swal.fire({
-              //         icon: response.data.status,
-              //         title: response.data.message,
-              //         showConfirmButton: false,
-              //         timer: 1500
-              //       })
-              //     }
-              // })
-              // .catch(function (error) {
-              //     console.log(error);
-              // });
+                  }else{
+                    Swal.fire({
+                      icon: response.data.status,
+                      title: response.data.message,
+                      showConfirmButton: false,
+                      timer: 1500
+                    })
+                  }
+              })
+              .catch(function (error) {
+                  console.log(error);
+              });
               
           }
         });            

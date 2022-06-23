@@ -1,4 +1,4 @@
-# estock
+# ติดตั้ง eshop
 
 npm install
 

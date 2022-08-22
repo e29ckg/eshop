@@ -140,7 +140,7 @@
                                 <button v-if="Number(data.instock) === 0" type="button" class="btn btn-sm text-dark p-0" disabled>
                                     <i class="fas fa-shopping-cart text-primary mr-1"></i>หมด
                                 </button>
-                                <button v-else @click="add_to_cart(data.pro_id, data.pro_name, data.img, data.unit_name, data.instock, data.min)" type="button" class="btn btn-sm text-dark p-0">
+                                <button v-else @click="add_to_cart(data.pro_id, data.pro_name, data.img, data.unit_name, data.instock, data.min, data.min)" type="button" class="btn btn-sm text-dark p-0">
                                     <i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart
                                 </button>
                             </div>
@@ -314,7 +314,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                            
+                            {{carts}}
                         </div>
                     </div>
                 </div>

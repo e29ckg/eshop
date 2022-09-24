@@ -14,7 +14,8 @@ Vue.createApp({
       Ord:'',
       Ord_lists:'',
       product_detail:'',
-      c_order0:''
+      c_order0:'',
+      isLoading: false,
     }
   },
   mounted(){
@@ -23,6 +24,11 @@ Vue.createApp({
     this.get_fullname()
     this.get_catalogs()
     this.count_order0()
+  },
+  watch: {
+    q(){
+      this.ch_search_pro()
+    }
   },
   methods: {
     order_print(ord_id){
@@ -83,16 +89,17 @@ Vue.createApp({
       this.product_detail.qua = Number(this.product_detail.qua) + val
       this.ck_qua_input_detail()
     },
-    add_to_cart_detail(pro_id, pro_name, img, unit_name, instock, qua, min){
-      this.carts.push({pro_id:pro_id, pro_name:pro_name, img:img, unit_name:unit_name, instock:instock, qua:qua, min:min})
-      Swal.fire({
-        title:  pro_name,
-        text: "ใส่ในตะกร้าแล้ว",
-        icon: 'success',
-        timer: 1000,
-      })
-      this.$refs['cart_show'].click();
-    },
+    // add_to_cart_detail(pro_id, pro_name, img, unit_name, instock, qua, min){
+    //   this.carts.push({pro_id:pro_id, pro_name:pro_name, img:img, unit_name:unit_name, instock:instock, qua:qua, min:min})
+    //   // Swal.fire({
+    //   //   title:  pro_name,
+    //   //   text: "ใส่ในตะกร้าแล้ว",
+    //   //   icon: 'success',
+    //   //   timer: 1000,
+    //   // })
+    //   this.$refs['m_detail_close'].click();
+    //   this.$refs['cart_show'].click();
+    // },
     get_catalogs(){
       axios.post(this.url_base + '/estock/api/catalogs/read_catalogs_all.php')
           .then(response => {
@@ -109,6 +116,7 @@ Vue.createApp({
     ch_search_pro(){
       console.log(this.q)
       if(this.q.length > 0){
+        this.isLoading = true;
         axios.post(this.url_base + '/estock/api/products/product_search.php',{q:this.q})
           .then(response => {
               if (response.data.status){
@@ -117,7 +125,10 @@ Vue.createApp({
           })
           .catch(function (error) {
               console.log(error);
-          });
+          })
+          .finally(() => {
+            this.isLoading = false;
+          })
       }else{
         this.get_products()
       }
@@ -141,7 +152,16 @@ Vue.createApp({
       if(Number(min) > Number(instock)){qua = instock}
       else if(Number(min) < 1){qua = 1}
       else{qua = Number(min)}
-      this.carts.push({pro_id:pro_id, pro_name:pro_name, img:img, unit_name:unit_name, instock:instock, qua:qua, min:min})
+      let a = 0;
+      for (let x in this.carts) {
+        if(pro_id == this.carts[x].pro_id){
+          this.carts[x].qua += qua
+          a++
+        }
+      }
+      if(a === 0){
+        this.carts.push({pro_id:pro_id, pro_name:pro_name, img:img, unit_name:unit_name, instock:instock, qua:qua, min:min})
+      }
       Swal.fire({
         title:  pro_name,
         text: "ใส่ในตะกร้าแล้ว",
@@ -150,6 +170,7 @@ Vue.createApp({
       })
       this.$refs['cart_show'].click();
     },
+    
     ck_qua_input(index){
       if(Number(this.carts[index].qua) < Number(this.carts[index].min)){ this.carts[index].qua = Number(this.carts[index].min)}
       if(Number(this.carts[index].qua) > Number(this.carts[index].instock)){ this.carts[index].qua = Number(this.carts[index].instock)}
@@ -165,7 +186,8 @@ Vue.createApp({
       this.ck_qua_input(index)
     },
     del_cart_list(index){
-      this.carts.pop()
+      // this.carts.pop()
+      this.carts.splice(index, 1);
     },
     send_order(){
       if(this.carts[0].pro_id != '' && this.carts[0].qua != 0){

@@ -24,12 +24,21 @@
     <!-- Customized Bootstrap Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
     <link href="css/app.css" rel="stylesheet">
+    <style>
+       
+        .modal-body{
+            height: 80vh;
+            overflow-y: auto;
+        }
+    </style>
 </head>
 
 <body >
     <!-- Topbar Start -->
     <div id="app"></div>
-<div id="shop" v-cloak>    
+<div id="shop" v-cloak> 
+      
+    
     <div class="container-fluid text-dark" >
         
         <div class="row align-items-center py-3 px-xl-5">
@@ -41,8 +50,12 @@
             <div class="col-lg-6 col-6 text-left">
                 <form action="">
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search for products" v-model="q" @keyup="ch_search_pro" ref="search">
+                        <input type="text" class="form-control" placeholder="Search for products" v-model="q" ref="search">
                         <div class="input-group-append">
+                            <div class='spinner' v-if='isLoading'>
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    Loading...                        
+                            </div> 
                             <span class="input-group-text bg-transparent text-primary">
                                 <i class="fa fa-search"></i>
                             </span>
@@ -122,7 +135,7 @@
                         <div class="card product-item border-0 mt-2 h-100">
                             <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0" @click="get_product(index)"  data-toggle="modal" data-target="#detailModal">
                                 <img class="img-fluid w-100" v-if="data.img" :src="'../estock/uploads/' + data.img" alt="pro_img">
-                                <img class="img-fluid w-100" v-else src="../estock//uploads/none.png" alt="">
+                                <img class="img-fluid w-100" v-else src="../estock/uploads/none.png" alt="">
                             </div>
                             <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
                                 <h5 class="mb-3">{{data.pro_name}}</h5>
@@ -164,8 +177,8 @@
     <!-- Footer End -->
     
     <!-- Detail Modal -->
-    <div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
+    <div class="modal fade" id="detailModal" tabindex="-2" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="detailModalLabel">รายละเอียด</h5>
@@ -248,7 +261,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" ref="m_detail_close">Close</button>
                     <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
                 </div>
             </div>
@@ -258,7 +271,7 @@
 
     <!-- Cart Modal -->
     <div class="modal fade" id="cartModal" tabindex="-1" role="dialog" aria-labelledby="cartModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="cartModalLabel">ตะกร้าสินค้า</h5>
@@ -306,13 +319,14 @@
                                                 </div>
                                             </td>
                                             <td class="align-middle">
-                                                <button @click="del_cart_list(index)" v-if="index + 1  == carts.length" class="btn btn-sm btn-primary">
+                                                <button @click="del_cart_list(index)"  class="btn btn-sm btn-primary">
                                                     <i class="fa fa-times"></i>
                                                 </button>
                                             </td>
                                         </tr>                                        
                                     </tbody>
                                 </table>
+                                <!-- {{carts}} -->
                             </div>
                             
                         </div>
@@ -330,7 +344,7 @@
 
     <!-- View Record Modal -->
     <div class="modal fade" id="viewRecordModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="detailModalLabel">ประวัติการเบิก</h5>

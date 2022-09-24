@@ -153,7 +153,7 @@
                                 <button v-if="Number(data.instock) === 0" type="button" class="btn btn-sm text-dark p-0" disabled>
                                     <i class="fas fa-shopping-cart text-primary mr-1"></i>หมด
                                 </button>
-                                <button v-else @click="add_to_cart(data.pro_id, data.pro_name, data.img, data.unit_name, data.instock, data.min)" type="button" class="btn btn-sm text-dark p-0">
+                                <button v-else @click="add_to_cart(data.pro_id, data.pro_name, data.img, data.unit_name, data.instock, data.min, data.min)" type="button" class="btn btn-sm text-dark p-0">
                                     <i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart
                                 </button>
                             </div>
@@ -269,7 +269,7 @@
     </div>
     <!-- Detail Modal -->
 
-    <!-- Cart Modal -->
+    <!-- Cart Modal ตะกร้าสินค้า -->
     <div class="modal fade" id="cartModal" tabindex="-1" role="dialog" aria-labelledby="cartModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -306,7 +306,7 @@
                                             <td class="align-middle">
                                                 <div class="input-group quantity mx-auto" style="width: 150px;">
                                                     <div class="input-group-btn">
-                                                        <button @click="click_qua_down(index)" class="btn btn-sm btn-primary btn-minus" >
+                                                        <button @click="click_qua_down(index,min)" class="btn btn-sm btn-primary btn-minus" >
                                                             <i class="fa fa-minus"></i>
                                                         </button>
                                                     </div>
@@ -314,7 +314,7 @@
                                                     <input :value="formatCurrency0(ca.qua)" @keyup="ck_qua_input(index)" @change="ck_qua_input(index)" type="text" class="form-control form-control-sm bg-secondary text-center" disabled>
 
                                                     <div class="input-group-btn">
-                                                        <button  @click="click_qua_up(index)" class="btn btn-sm btn-primary btn-plus"><i class="fa fa-plus"></i></button>
+                                                        <button  @click="click_qua_up(index,min)" class="btn btn-sm btn-primary btn-plus"><i class="fa fa-plus"></i></button>
                                                     </div>
                                                 </div>
                                             </td>
@@ -328,7 +328,7 @@
                                 </table>
                                 <!-- {{carts}} -->
                             </div>
-                            
+                            <!-- {{carts}} -->
                         </div>
                     </div>
                 </div>

@@ -180,7 +180,7 @@ Vue.createApp({
       this.carts[index].qua = Number(this.carts[index].qua) - val
       this.ck_qua_input(index)
     },    
-    click_qua_up(index){
+    click_qua_up(index,min){
       val = Number(this.carts[index].min)
       this.carts[index].qua = Number(this.carts[index].qua) + val
       this.ck_qua_input(index)
@@ -202,9 +202,11 @@ Vue.createApp({
         }).then((result) => {
           if (result.isConfirmed) {
             var jwt = localStorage.getItem("jwt");
+            var user_data = localStorage.getItem("user_data");
             axios.post(this.url_base + '/estock/api/orders/orders_by_user.php',{carts:this.carts, action:'insert'},{ headers: {"Authorization" : `Bearer ${jwt}`}})
-                .then(response => {
-                    if (response.data.status == 'success') {
+            .then(response => {
+              if (response.data.status == 'success') {
+                      axios.post(this.url_base + '/estock/api/line/order.php', {carts:this.carts,user_data:user_data})
                       Swal.fire({
                         icon: response.data.status,
                         title: response.data.message,
@@ -298,8 +300,10 @@ Vue.createApp({
             this.Ord[0].action = 'delete';  
             this.Ord[0].ord_id = ord_id;  
             axios.post(this.url_base + '/estock/api/orders/orders_action.php',{Ord:this.Ord},{ headers: {"Authorization" : `Bearer ${jwt}`}})
-              .then(response => {
-                  if (response.data.status == 'success') {
+            .then(response => {
+              if (response.data.status == 'success') {
+                    var user_data = localStorage.getItem("user_data");
+                    axios.post(this.url_base + '/estock/api/line/order_cancel.php', {ord_id:ord_id,user_data:user_data})
                     Swal.fire({
                       icon: response.data.status,
                       title: response.data.message,

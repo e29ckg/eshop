@@ -117,7 +117,7 @@ Vue.createApp({
       console.log(this.q)
       if(this.q.length > 0){
         this.isLoading = true;
-        axios.post(this.url_base + '/estock/api/products/product_search.php',{q:this.q})
+        axios.post(this.url_base + '/estock/api/products/product_search_shop.php',{q:this.q})
           .then(response => {
               if (response.data.status){
                 this.datas = response.data.respJSON;                    
